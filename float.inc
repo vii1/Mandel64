@@ -34,6 +34,9 @@ float_t	.struct	exp = 0, sgn = 0, man = 0
 	.ends
 
 dfloat	.macro	val
+	.if type(\val) == gap
+		.byte ?,?,?,?,?
+	.else
 	f := float(\val)
 	.if f == 0.0
 		.dstruct float_t, 0,0,0
@@ -69,6 +72,7 @@ dfloat	.macro	val
 		; ¡Hecho!
 		.dstruct float_t, ex, sgn, m
 		;.warn format("%f -> %02x%08x", \val, ex, (sgn<<31) | (m & $7fffffff))
+	.endif
 	.endif
 	.endm
 

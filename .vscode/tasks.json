@@ -4,7 +4,8 @@
     "version": "0.1.0",
     "command": "64tass",
     "isShellCommand": true,
-    "args": [ "-Wall", "-a", "-C", "--cbm-prg", "-Lmandel.lst", "-omandel.prg", "mandel.s" ],
+    "args": [ "-Wall", "-a", "-C", "--cbm-prg", "-Lmandel.lst", "-lmandel.lbl", "--vice-labels",
+              "-omandel.prg", "mandel.s" ],
     "showOutput": "always",
     "echoCommand": true,
     "windows": {

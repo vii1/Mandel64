@@ -1,0 +1,526 @@
+
+; 64tass Turbo Assembler Macro V1.52.1237 listing file
+; 64tass -Wall -a -C --cbm-prg -Lmandel.lst -lmandel.lbl --vice-labels -omandel.prg mandel.s
+; Sun Jan 15 03:21:48 2017
+
+;Offset	;Hex		;Monitor	;Source
+
+;******  Processing input file: mandel.s
+
+
+;******  Processing file: c64.inc
+
+=$90					ST     	       	= $90		; IEC status byte
+=$a0					TIME            = $A0          ; 60 HZ clock
+=$b7					FNAM_LEN       	= $B7		; Length of filename
+=$b9					SECADR 	       	= $B9		; Secondary address
+=$ba					DEVNUM 	       	= $BA		; Device number
+=$bb					FNAM            = $BB          ; Pointer to filename
+=$c6					KEY_COUNT      	= $C6		; Number of keys in input buffer
+=$c7					RVS             = $C7          ; Reverse flag
+=$cc					CURS_FLAG      	= $CC		; 1 = cursor off
+=$cd					CURS_BLINK     	= $CD		; Blink counter
+=$ce					CURS_CHAR      	= $CE		; Character under the cursor
+=$cf					CURS_STATE     	= $CF		; Cursor blink state
+=$d1					SCREEN_PTR     	= $D1		; Pointer to current char in text screen
+=$d3					CURS_X 	       	= $D3		; Cursor column
+=$d6					CURS_Y 	       	= $D6		; Cursor row
+=$f3					CRAM_PTR       	= $F3		; Pointer to current char in color RAM
+=$200					BASIC_BUF      	= $200		; Location of command-line
+=89					BASIC_BUF_LEN	= 89		; Maximum length of command-line
+=$286					CHARCOLOR       = $286
+=$287					CURS_COLOR      = $287		; Color under the cursor
+=$2a6					PALFLAG	       	= $2A6		; $01 = PAL, $00 = NTSC
+=$e544					CLRSCR 	       	= $E544
+=$e5b4					KBDREAD	       	= $E5B4
+=$febc					NMIEXIT         = $FEBC
+=$0314					IRQVec 	       	= $0314
+=$0316					BRKVec 	       	= $0316
+=$0318					NMIVec 	       	= $0318
+=40					XSIZE           = 40
+=25					YSIZE           = 25
+=$d000					VIC    	       	= $D000
+=$d000					VIC_SPR0_X     	= $D000
+=$d001					VIC_SPR0_Y     	= $D001
+=$d002					VIC_SPR1_X     	= $D002
+=$d003					VIC_SPR1_Y     	= $D003
+=$d004					VIC_SPR2_X     	= $D004
+=$d005					VIC_SPR2_Y     	= $D005
+=$d006					VIC_SPR3_X     	= $D006
+=$d007					VIC_SPR3_Y     	= $D007
+=$d008					VIC_SPR4_X     	= $D008
+=$d009					VIC_SPR4_Y     	= $D009
+=$d00a					VIC_SPR5_X     	= $D00A
+=$d00b					VIC_SPR5_Y     	= $D00B
+=$d00c					VIC_SPR6_X     	= $D00C
+=$d00d					VIC_SPR6_Y     	= $D00D
+=$d00e					VIC_SPR7_X     	= $D00E
+=$d00f					VIC_SPR7_Y     	= $D00F
+=$d010					VIC_SPR_HI_X   	= $D010
+=$d015					VIC_SPR_ENA    	= $D015
+=$d017					VIC_SPR_EXP_Y  	= $D017
+=$d01d					VIC_SPR_EXP_X  	= $D01D
+=$d01c					VIC_SPR_MCOLOR 	= $D01C
+=$d01b					VIC_SPR_BG_PRIO = $D01B
+=$d025					VIC_SPR_MCOLOR0 = $D025
+=$d026					VIC_SPR_MCOLOR1 = $D026
+=$d027					VIC_SPR0_COLOR 	= $D027
+=$d028					VIC_SPR1_COLOR 	= $D028
+=$d029					VIC_SPR2_COLOR 	= $D029
+=$d02a					VIC_SPR3_COLOR 	= $D02A
+=$d02b					VIC_SPR4_COLOR 	= $D02B
+=$d02c					VIC_SPR5_COLOR 	= $D02C
+=$d02d					VIC_SPR6_COLOR 	= $D02D
+=$d02e					VIC_SPR7_COLOR 	= $D02E
+=$d011					VIC_CTRL1      	= $D011
+=$d016					VIC_CTRL2      	= $D016
+=$d012					VIC_HLINE      	= $D012
+=$d018					VIC_VIDEO_ADR  	= $D018
+=$d019					VIC_IRR	       	= $D019        ; Interrupt request register
+=$d01a					VIC_IMR	       	= $D01A	; Interrupt mask register
+=$d020					VIC_BORDERCOLOR = $D020
+=$d021					VIC_BG_COLOR0  	= $D021
+=$d022					VIC_BG_COLOR1  	= $D022
+=$d023					VIC_BG_COLOR2  	= $D023
+=$d024					VIC_BG_COLOR3  	= $D024
+=$d02f					VIC_KBD_128    	= $D02F        ; Extended kbd bits (visible in 64 mode)
+=$d030					VIC_CLK_128    	= $D030	; Clock rate register (visible in 64 mode)
+=$d400					SID    	       	= $D400
+=$d400					SID_S1Lo       	= $D400
+=$d401					SID_S1Hi       	= $D401
+=$d402					SID_PB1Lo      	= $D402
+=$d403					SID_PB1Hi      	= $D403
+=$d404					SID_Ctl1       	= $D404
+=$d405					SID_AD1	       	= $D405
+=$d406					SID_SUR1       	= $D406
+=$d407					SID_S2Lo       	= $D407
+=$d408					SID_S2Hi       	= $D408
+=$d409					SID_PB2Lo      	= $D409
+=$d40a					SID_PB2Hi      	= $D40A
+=$d40b					SID_Ctl2       	= $D40B
+=$d40c					SID_AD2	       	= $D40C
+=$d40d					SID_SUR2       	= $D40D
+=$d40e					SID_S3Lo       	= $D40E
+=$d40f					SID_S3Hi       	= $D40F
+=$d410					SID_PB3Lo      	= $D410
+=$d411					SID_PB3Hi      	= $D411
+=$d412					SID_Ctl3       	= $D412
+=$d413					SID_AD3	       	= $D413
+=$d414					SID_SUR3       	= $D414
+=$d415					SID_FltLo      	= $D415
+=$d416					SID_FltHi      	= $D416
+=$d417					SID_FltCtl     	= $D417
+=$d418					SID_Amp	       	= $D418
+=$d419					SID_ADConv1    	= $D419
+=$d41a					SID_ADConv2    	= $D41A
+=$d41b					SID_Noise      	= $D41B
+=$d41c					SID_Read3      	= $D41C
+=$d600					VDC_INDEX      	= $D600
+=$d601					VDC_DATA       	= $D601
+=$dc00					CIA1   	       	= $DC00
+=$dc00					CIA1_PRA       	= $DC00
+=$dc01					CIA1_PRB       	= $DC01
+=$dc02					CIA1_DDRA      	= $DC02
+=$dc03					CIA1_DDRB      	= $DC03
+=$dc08					CIA1_TOD10      = $DC08
+=$dc09					CIA1_TODSEC     = $DC09
+=$dc0a					CIA1_TODMIN     = $DC0A
+=$dc0b					CIA1_TODHR      = $DC0B
+=$dc0d					CIA1_ICR       	= $DC0D
+=$dc0e					CIA1_CRA       	= $DC0E
+=$dc0f					CIA1_CRB       	= $DC0F
+=$dd00					CIA2   	       	= $DD00
+=$dd00					CIA2_PRA       	= $DD00
+=$dd01					CIA2_PRB       	= $DD01
+=$dd02					CIA2_DDRA      	= $DD02
+=$dd03					CIA2_DDRB      	= $DD03
+=$dd08					CIA2_TOD10      = $DD08
+=$dd09					CIA2_TODSEC     = $DD09
+=$dd0a					CIA2_TODMIN     = $DD0A
+=$dd0b					CIA2_TODHR      = $DD0B
+=$dd0d					CIA2_ICR       	= $DD0D
+=$dd0e					CIA2_CRA       	= $DD0E
+=$dd0f					CIA2_CRB       	= $DD0F
+=$d075					SCPU_VIC_Bank1 	= $D075
+=$d07a					SCPU_Slow      	= $D07A
+=$d07b					SCPU_Fast      	= $D07B
+=$d07e					SCPU_EnableRegs = $D07E
+=$d07f					SCPU_DisableRegs= $D07F
+=$d0bc					SCPU_Detect    	= $D0BC
+=$01					LORAM		= $01  		; Enable the basic rom
+=$02					HIRAM		= $02  		; Enable the kernal rom
+=$04					IOEN 		= $04  		; Enable I/O
+=$08					CASSDATA	= $08  		; Cassette data
+=$10					CASSPLAY	= $10  		; Cassette: Play
+=$20					CASSMOT		= $20  		; Cassette motor on
+=$80					TP_FAST		= $80  		; Switch Rossmoeller TurboProcess to fast mode
+=$f8					RAMONLY		= $F8  		; (~(LORAM | HIRAM | IOEN)) & $FF
+
+;******  Return to file: mandel.s
+
+
+;******  Processing file: float.inc
+
+=$bba2					LDFAC1 = $BBA2  ; Load FAC#1 from memory (A:L, Y:H)
+=$ba8c					LDFAC2 = $BA8C  ; Load FAC#2 from memory (A:L, Y:H)
+=$bbd4					STFAC1 = $BBD4  ; Store FAC#1 in memory (X:L, Y:H)
+=$bc0c					TFAC12 = $BC0C  ; Copy FAC#1 into FAC#2
+=$bbfc					TFAC21 = $BBFC  ; Copy FAC#2 into FAC#1
+=$ba28					FMUL   = $BA28    ; Multiply
+=$ba59					FMULA  = $BA59   ; Multiply by A
+=$b867					FADDM  = $B867   ; Add FAC#1 + MEM (A:L, Y:H)
+=$b86a					FADD   = $B86A    ; Add FAC#1 + FAC#2
+=$bc5b					FCMP   = $BC5B    ; Compare FAC#1 with memory (A:L, Y:H) -> A (0, 1, -1)
+=$bfb4					FNEG   = $BFB4    ; Negate FAC#1 if nonzero
+.0000					float_inc
+.0000					float_t
+>0000						.byte	 0
+>0001						.byte	((bool( 0)?1:0) << 7) | (( 0 >> 24) & $7f)	; La mantisa se guarda en big-endian
+>0002						.byte	( 0 >> 16) & $ff
+>0003						.byte	( 0 >> 8) & $ff
+>0004						.byte	 0 & $ff
+
+;******  Return to file: mandel.s
+
+
+;******  Processing file: sections.inc
+
+>4162					    .align 2
+
+;******  Return to file: mandel.s
+
+
+;******  Processing file: basicstub.inc
+
+.0801					basicstub
+>0801	0c 08 00 00				.word (+), 0		; puntero a siguiente linea y nº de línea
+>0805	9e 31 36 33 38 34 00			.null $9e, ^main	; comando SYS
+>080c	24 08 01 00			+	.word (+), 1
+>0810	8f 20 4d 41 4e 44 45 4c			.null $8f, " mandelbrot by vii"	; REM
+>0818	42 52 4f 54 20 42 59 20 56 49 49 00
+>0824	2f 08 02 00			+	.word (+), 2
+>0828	8f 20 32 30 31 37 00			.null $8f, " 2017"
+>082f	00 00				+	.word 0			; fin
+
+;******  Return to file: mandel.s
+
+=$fb					ptr1    =       $FB      ; word ptr
+=$fd					tmp     =       $FD
+=$fe					countx	=		$FE
+=$2000					bmp     =       $2000
+=16192					bmp_end	=		bmp + 40 * 25 * 8	; 160x200 * 2 bpp = 64000 bits = 8000 bytes
+=$400					screen  =       $400
+=$d800					color   =       $D800
+=3					max_iter = 3
+.4000					main
+.4000	a9 0b		lda #$0b		lda #11
+.4002	8d 20 d0	sta $d020		sta VIC_BORDERCOLOR       ; color de borde: gris 1
+.4005	a9 00		lda #$00		lda #0
+.4007	8d 21 d0	sta $d021		sta VIC_BG_COLOR0       ; color de fondo: negro
+.400a	a9 18		lda #$18		lda #%00011000
+.400c	8d 18 d0	sta $d018		sta VIC_VIDEO_ADR       ; la memoria de bitmap comienza en $2000
+.400f	a9 38		lda #$38		lda #%00111000
+.4011	8d 11 d0	sta $d011		sta VIC_CTRL1       ; modo bit-map
+.4014	a9 18		lda #$18		lda #%00011000
+.4016	8d 16 d0	sta $d016		sta VIC_CTRL2       ; multicolor
+.4019	a2 00		ldx #$00	clrcol	ldx #0          ; memoria de color por defecto:
+.401b	a9 98		lda #$98	_loop	lda #$98        ; 0=negro, 1=marrón, 2=naranja, 3=amarillo
+.401d	9d 00 04	sta $0400,x		sta screen,x
+.4020	9d 00 05	sta $0500,x		sta screen + $100,x
+.4023	9d 00 06	sta $0600,x		sta screen + $200,x
+.4026	9d 00 07	sta $0700,x		sta screen + $300,x
+.4029	a9 07		lda #$07		lda #7
+.402b	9d 00 d8	sta $d800,x		sta color,x
+.402e	9d 00 d9	sta $d900,x		sta color + $100,x
+.4031	9d 00 da	sta $da00,x		sta color + $200,x
+.4034	9d 00 db	sta $db00,x		sta color + $300,x
+.4037	e8		inx			inx
+.4038	d0 e1		bne $401b		bne _loop
+.403a					clrfb
+.403a	86 fb		stx $fb			stx ptr1        ; ptr1 = bmp
+.403c	a2 20		ldx #$20		ldx #>bmp
+.403e	86 fc		stx $fc			stx ptr1+1
+.4040	a0 00		ldy #$00		ldy #0
+.4042	a9 00		lda #$00		lda #0
+.4044	91 fb		sta ($fb),y	_loop1	sta (ptr1),y    ; memset( bmp, 0, 0x2000 )
+.4046	c8		iny			iny
+.4047	d0 fb		bne $4044		bne _loop1
+.4049	e8		inx			inx
+.404a	e0 40		cpx #$40		cpx #(>bmp)+$20
+.404c	f0 04		beq $4052		beq _end
+.404e	86 fc		stx $fc			stx ptr1+1
+.4050	d0 f2		bne $4044		bne _loop1
+.4052					_end
+.4052					domandel
+.4052	a9 00		lda #$00		lda <#bmp
+.4054	85 fb		sta $fb			sta ptr1
+.4056	a9 20		lda #$20		lda >#bmp
+.4058	85 fc		sta $fc			sta ptr1+1
+.405a					_loopy
+.405a	a9 28		lda #$28		lda #40
+.405c	85 fe		sta $fe			sta countx
+.405e					_loopx
+.405e	20 c4 40	jsr $40c4		jsr mandel
+.4061	85 fd		sta $fd			sta tmp
+.4063	0a		asl a			asl a
+.4064	0a		asl a			asl a
+.4065	05 fd		ora $fd			ora tmp
+.4067	0a		asl a			asl a
+.4068	0a		asl a			asl a
+.4069	05 fd		ora $fd			ora tmp
+.406b	0a		asl a			asl a
+.406c	0a		asl a			asl a
+.406d	05 fd		ora $fd			ora tmp
+.406f	a0 00		ldy #$00		ldy #0
+.4071	91 fb		sta ($fb),y		sta (ptr1),y
+.4073	e6 fb		inc $fb			inc ptr1        ; *(ptr1++) = pixel
+.4075	d0 02		bne $4079		bne _nextx
+.4077	e6 fc		inc $fc			inc ptr1+1
+.4079					_nextx
+.4079	a9 62		lda #$62		lda #<x0
+.407b	a0 41		ldy #$41		ldy #>x0
+.407d	20 a2 bb	jsr $bba2		jsr LDFAC1
+.4080	a9 94		lda #$94		lda #<xstep
+.4082	a0 41		ldy #$41		ldy #>xstep
+.4084	20 67 b8	jsr $b867			jsr FADDM
+.4087	a2 62		ldx #$62		ldx #<x0
+.4089	a0 41		ldy #$41		ldy #>x0
+.408b	20 d4 bb	jsr $bbd4		jsr STFAC1
+.408e	c6 fe		dec $fe			dec countx
+.4090	d0 cc		bne $405e		bne _loopx
+.4092	a5 fb		lda $fb			lda ptr1
+.4094	c9 40		cmp #$40		cmp #<bmp_end
+.4096	d0 06		bne $409e		bne _nexty
+.4098	a5 fc		lda $fc			lda ptr1+1
+.409a	c9 3f		cmp #$3f		cmp #>bmp_end
+.409c	f0 23		beq $40c1		beq _end		; if ptr1 == bmp_end
+.409e					_nexty
+.409e	a0 04		ldy #$04		ldy #4
+.40a0	b9 8a 41	lda $418a,y	_loop   lda kx0,y
+.40a3	99 62 41	sta $4162,y		sta x0,y
+.40a6	88		dey			dey
+.40a7	10 f7		bpl $40a0		bpl _loop
+.40a9	a9 67		lda #$67		lda #<y0
+.40ab	a0 41		ldy #$41		ldy #>y0
+.40ad	20 a2 bb	jsr $bba2		jsr LDFAC1
+.40b0	a9 99		lda #$99		lda #<ystep
+.40b2	a0 41		ldy #$41		ldy #>ystep
+.40b4	20 67 b8	jsr $b867			jsr FADDM
+.40b7	a2 67		ldx #$67		ldx #<y0
+.40b9	a0 41		ldy #$41		ldy #>y0
+.40bb	20 d4 bb	jsr $bbd4		jsr STFAC1
+.40be	4c 5a 40	jmp $405a		jmp _loopy
+.40c1					_end
+.40c1	f0 fe		beq $40c1		beq _end
+.40c3	60		rts			rts
+.40c4					mandel
+.40c4	a9 00		lda #$00		lda #0          ; num iters = 0
+.40c6	48		pha			pha
+.40c7	8d 6c 41	sta $416c		sta cx       ; cx = 0
+.40ca	8d 71 41	sta $4171		sta cy       ; cy = 0
+.40cd					_loop
+.40cd	a9 6c		lda #$6c		lda #<cx
+.40cf	a0 41		ldy #$41		ldy #>cx
+.40d1	20 a2 bb	jsr $bba2		jsr LDFAC1
+.40d4	20 0c bc	jsr $bc0c		jsr TFAC12
+.40d7	20 28 ba	jsr $ba28			jsr FMUL
+.40da	a2 76		ldx #$76		ldx #<cx2
+.40dc	a0 41		ldy #$41		ldy #>cx2
+.40de	20 d4 bb	jsr $bbd4		jsr STFAC1
+.40e1	a9 71		lda #$71		lda #<cy
+.40e3	a0 41		ldy #$41		ldy #>cy
+.40e5	20 a2 bb	jsr $bba2		jsr LDFAC1
+.40e8	20 0c bc	jsr $bc0c		jsr TFAC12
+.40eb	20 28 ba	jsr $ba28			jsr FMUL
+.40ee	a2 7b		ldx #$7b		ldx #<cy2
+.40f0	a0 41		ldy #$41		ldy #>cy2
+.40f2	20 d4 bb	jsr $bbd4		jsr STFAC1
+.40f5	20 b4 bf	jsr $bfb4		jsr FNEG
+.40f8	a9 76		lda #$76		lda #<cx2
+.40fa	a0 41		ldy #$41		ldy #>cx2
+.40fc	20 67 b8	jsr $b867			jsr FADDM
+.40ff	a9 62		lda #$62		lda #<x0
+.4101	a0 41		ldy #$41		ldy #>x0
+.4103	20 67 b8	jsr $b867			jsr FADDM
+.4106	a2 80		ldx #$80		ldx #<xtemp
+.4108	a0 41		ldy #$41		ldy #>xtemp
+.410a	20 d4 bb	jsr $bbd4		jsr STFAC1
+.410d	a9 6c		lda #$6c		lda #<cx
+.410f	a0 41		ldy #$41		ldy #>cx
+.4111	20 a2 bb	jsr $bba2		jsr LDFAC1
+.4114	a9 71		lda #$71		lda #<cy
+.4116	a0 41		ldy #$41		ldy #>cy
+.4118	20 8c ba	jsr $ba8c		jsr LDFAC2
+.411b	20 28 ba	jsr $ba28			jsr FMUL
+.411e	a9 02		lda #$02			lda #2
+.4120	20 59 ba	jsr $ba59			jsr FMULA
+.4123	a9 67		lda #$67		lda #<y0
+.4125	a0 41		ldy #$41		ldy #>y0
+.4127	20 67 b8	jsr $b867			jsr FADDM
+.412a	a2 71		ldx #$71		ldx #<cy
+.412c	a0 41		ldy #$41		ldy #>cy
+.412e	20 d4 bb	jsr $bbd4		jsr STFAC1
+.4131	a0 04		ldy #$04		ldy #4
+.4133	b9 80 41	lda $4180,y	_loop   lda xtemp,y
+.4136	99 6c 41	sta $416c,y		sta cx,y
+.4139	88		dey			dey
+.413a	10 f7		bpl $4133		bpl _loop
+.413c	68		pla			pla
+.413d	aa		tax			tax
+.413e	e8		inx			inx             ; num iters ++
+.413f	e0 03		cpx #$03		cpx #max_iter
+.4141	10 1e		bpl $4161		bpl _end2        ; if num iters >= max_iter
+.4143	8a		txa			txa
+.4144	48		pha			pha
+.4145	a9 76		lda #$76		lda #<cx2
+.4147	a0 41		ldy #$41		ldy #>cx2
+.4149	20 a2 bb	jsr $bba2		jsr LDFAC1
+.414c	a9 7b		lda #$7b		lda #<cy2
+.414e	a0 41		ldy #$41		ldy #>cy2
+.4150	20 67 b8	jsr $b867			jsr FADDM
+.4153	a9 8f		lda #$8f		lda #<k4f
+.4155	a0 41		ldy #$41		ldy #>k4f
+.4157	20 5b bc	jsr $bc5b		jsr FCMP
+.415a	aa		tax			tax
+.415b	10 03		bpl $4160		bpl _end		 ; if cx2 + cy2 < 4
+.415d	4c cd 40	jmp $40cd		jmp _loop
+.4160					_end
+.4160	68		pla			pla
+.4161					_end2
+.4161	60		rts			rts
+.4162					x0
+=-2.5						f := float(-2.5)
+=1							sgn = sign(f) < 0 ? 1 : 0
+=2.5							f := abs(f)
+=0							ex := 0
+=1.25									f /= 2
+=0.625									f /= 2
+=130							ex += 128
+=2684354560						m = int( trunc( f * $100000000 ) )
+>4162	82					.byte	ex
+>4163	a0					.byte	((bool(sgn)?1:0) << 7) | ((m >> 24) & $7f)	; La mantisa se guarda en big-endian
+>4164	00					.byte	(m >> 16) & $ff
+>4165	00					.byte	(m >> 8) & $ff
+>4166	00					.byte	m & $ff
+.4167					y0
+=-1.0						f := float(-1)
+=1							sgn = sign(f) < 0 ? 1 : 0
+=1.0							f := abs(f)
+=0							ex := 0
+=0.5									f /= 2
+=129							ex += 128
+=2147483648						m = int( trunc( f * $100000000 ) )
+>4167	81					.byte	ex
+>4168	80					.byte	((bool(sgn)?1:0) << 7) | ((m >> 24) & $7f)	; La mantisa se guarda en big-endian
+>4169	00					.byte	(m >> 16) & $ff
+>416a	00					.byte	(m >> 8) & $ff
+>416b	00					.byte	m & $ff
+.416c					cx
+=0.0						f := float(0)
+>416c	00					.byte	0
+>416d	00					.byte	((bool(0)?1:0) << 7) | ((0 >> 24) & $7f)	; La mantisa se guarda en big-endian
+>416e	00					.byte	(0 >> 16) & $ff
+>416f	00					.byte	(0 >> 8) & $ff
+>4170	00					.byte	0 & $ff
+.4171					cy
+=0.0						f := float(0)
+>4171	00					.byte	0
+>4172	00					.byte	((bool(0)?1:0) << 7) | ((0 >> 24) & $7f)	; La mantisa se guarda en big-endian
+>4173	00					.byte	(0 >> 16) & $ff
+>4174	00					.byte	(0 >> 8) & $ff
+>4175	00					.byte	0 & $ff
+.4176					cx2
+=0.0						f := float(0)
+>4176	00					.byte	0
+>4177	00					.byte	((bool(0)?1:0) << 7) | ((0 >> 24) & $7f)	; La mantisa se guarda en big-endian
+>4178	00					.byte	(0 >> 16) & $ff
+>4179	00					.byte	(0 >> 8) & $ff
+>417a	00					.byte	0 & $ff
+.417b					cy2
+=0.0						f := float(0)
+>417b	00					.byte	0
+>417c	00					.byte	((bool(0)?1:0) << 7) | ((0 >> 24) & $7f)	; La mantisa se guarda en big-endian
+>417d	00					.byte	(0 >> 16) & $ff
+>417e	00					.byte	(0 >> 8) & $ff
+>417f	00					.byte	0 & $ff
+.4180					xtemp
+=0.0						f := float(0)
+>4180	00					.byte	0
+>4181	00					.byte	((bool(0)?1:0) << 7) | ((0 >> 24) & $7f)	; La mantisa se guarda en big-endian
+>4182	00					.byte	(0 >> 16) & $ff
+>4183	00					.byte	(0 >> 8) & $ff
+>4184	00					.byte	0 & $ff
+.4185					k0
+=0.0						f := float(0)
+>4185	00					.byte	0
+>4186	00					.byte	((bool(0)?1:0) << 7) | ((0 >> 24) & $7f)	; La mantisa se guarda en big-endian
+>4187	00					.byte	(0 >> 16) & $ff
+>4188	00					.byte	(0 >> 8) & $ff
+>4189	00					.byte	0 & $ff
+.418a					kx0
+=-2.5						f := float(-2.5)
+=1							sgn = sign(f) < 0 ? 1 : 0
+=2.5							f := abs(f)
+=0							ex := 0
+=1.25									f /= 2
+=0.625									f /= 2
+=130							ex += 128
+=2684354560						m = int( trunc( f * $100000000 ) )
+>418a	82					.byte	ex
+>418b	a0					.byte	((bool(sgn)?1:0) << 7) | ((m >> 24) & $7f)	; La mantisa se guarda en big-endian
+>418c	00					.byte	(m >> 16) & $ff
+>418d	00					.byte	(m >> 8) & $ff
+>418e	00					.byte	m & $ff
+.418f					k4f
+=4.0						f := float(4)
+=0							sgn = sign(f) < 0 ? 1 : 0
+=4.0							f := abs(f)
+=0							ex := 0
+=2.0									f /= 2
+=1.0									f /= 2
+=0.5									f /= 2
+=131							ex += 128
+=2147483648						m = int( trunc( f * $100000000 ) )
+>418f	83					.byte	ex
+>4190	00					.byte	((bool(sgn)?1:0) << 7) | ((m >> 24) & $7f)	; La mantisa se guarda en big-endian
+>4191	00					.byte	(m >> 16) & $ff
+>4192	00					.byte	(m >> 8) & $ff
+>4193	00					.byte	m & $ff
+.4194					xstep
+=0.0109375					f := float(0.0109375)
+=0							sgn = sign(f) < 0 ? 1 : 0
+=0.0109375						f := abs(f)
+=0							ex := 0
+=0.021875								f *= 2
+=0.04375								f *= 2
+=0.0875									f *= 2
+=0.175									f *= 2
+=0.35									f *= 2
+=0.7									f *= 2
+=122							ex += 128
+=3006477107						m = int( trunc( f * $100000000 ) )
+>4194	7a					.byte	ex
+>4195	33					.byte	((bool(sgn)?1:0) << 7) | ((m >> 24) & $7f)	; La mantisa se guarda en big-endian
+>4196	33					.byte	(m >> 16) & $ff
+>4197	33					.byte	(m >> 8) & $ff
+>4198	33					.byte	m & $ff
+.4199					ystep
+=0.01						f := float(0.01)
+=0							sgn = sign(f) < 0 ? 1 : 0
+=0.01							f := abs(f)
+=0							ex := 0
+=0.02									f *= 2
+=0.04									f *= 2
+=0.08									f *= 2
+=0.16									f *= 2
+=0.32									f *= 2
+=0.64									f *= 2
+=122							ex += 128
+=2748779069						m = int( trunc( f * $100000000 ) )
+>4199	7a					.byte	ex
+>419a	23					.byte	((bool(sgn)?1:0) << 7) | ((m >> 24) & $7f)	; La mantisa se guarda en big-endian
+>419b	d7					.byte	(m >> 16) & $ff
+>419c	0a					.byte	(m >> 8) & $ff
+>419d	3d					.byte	m & $ff
+
+;******  End of listing

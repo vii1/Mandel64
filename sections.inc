@@ -6,6 +6,6 @@
     .dsection code
     .cerror * > $a000, "Code section too long"
 
-    .align $100
+    .align 2
     .dsection data
     .cerror * > $a000, "Data section too long"

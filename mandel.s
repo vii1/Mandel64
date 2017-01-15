@@ -11,9 +11,11 @@
 ; ---
 
 ptr1    =       $FB      ; word ptr
-tmp     =       $FD      ; word ptr
+tmp     =       $FD
+countx	=		$FE
 
 bmp     =       $2000
+bmp_end	=		bmp + 40 * 25 * 8	; 160x200 * 2 bpp = 64000 bits = 8000 bytes
 screen  =       $400
 color   =       $D800
 
@@ -22,10 +24,17 @@ max_iter = 3
 ; ---
 
 movw    .macro  dst, src
+.if repr(\src)[0] == "#"
+	lda <\src
+	sta \dst
+	lda >\src
+	sta \dst+1
+.else
 	lda \src
 	sta \dst
 	lda \src+1
 	sta \dst+1
+.endif
         .endm
 
 shl2or  .macro  n
@@ -42,11 +51,11 @@ main    .proc
 	lda #0
 	sta VIC_BG_COLOR0       ; color de fondo: negro
 	
-	lda #$18
+	lda #%00011000
 	sta VIC_VIDEO_ADR       ; la memoria de bitmap comienza en $2000
-	lda #$30
+	lda #%00111000
 	sta VIC_CTRL1       ; modo bit-map
-	lda #$10
+	lda #%00011000
 	sta VIC_CTRL2       ; multicolor
 
 clrcol	ldx #0          ; memoria de color por defecto:
@@ -74,36 +83,48 @@ _loop1	sta (ptr1),y    ; memset( bmp, 0, 0x2000 )
 	iny
 	bne _loop1
 	inx
-	cpx #>bmp+$20
+	cpx #(>bmp)+$20
 	beq _end
 	stx ptr1+1
 	bne _loop1
 _end
 
 domandel
-	#movw ptr1, bmp
-	lda #25
+	#movw ptr1, #bmp
+_loopy
 	lda #40
-	pha
+	sta countx
+_loopx
 	jsr mandel
 	sta tmp
 	#shl2or tmp
 	#shl2or tmp
 	#shl2or tmp
-	sta ptr1
+	ldy #0
+	sta (ptr1),y
 	inc ptr1        ; *(ptr1++) = pixel
+	bne _nextx
+	inc ptr1+1
+_nextx
 	#ldfac1 x0
 	#fadd xstep
 	#stfac1 x0       ; x0 += xstep
-	pla
-	tax
-	dex
-	bne _cont
+	dec countx
+	bne _loopx
+	lda ptr1
+	cmp #<bmp_end
+	bne _nexty
+	lda ptr1+1
+	cmp #>bmp_end
+	beq _end		; if ptr1 == bmp_end
+_nexty
 	#fmov x0, kx0    ; x0 = kx0
 	#ldfac1 y0
 	#fadd ystep
 	#stfac1 y0       ; y0 += ystep
-_cont
+	jmp _loopy
+_end
+	beq _end
 	rts
         .pend
 
@@ -116,9 +137,8 @@ mandel  .proc
 
 	lda #0          ; num iters = 0
 	pha
-	jsr FMULA
-	#stfac1 cx       ; cx = 0
-	#stfac1 cy       ; cy = 0
+	sta cx       ; cx = 0
+	sta cy       ; cy = 0
 _loop
 	#ldfac1 cx
 	#tfac12
@@ -147,16 +167,19 @@ _loop
 	tax
 	inx             ; num iters ++
 	cpx #max_iter
-	bpl _end        ; if num iters >= max_iter
+	bpl _end2        ; if num iters >= max_iter
 	txa
 	pha
 	
 	#ldfac1 cx2
 	#fadd cy2
 	#fcmp k4f
-	gmi _loop       ; if cx2 + cy2 < 4
+	tax
+	bpl _end		 ; if cx2 + cy2 < 4
+	jmp _loop      
 _end
 	pla
+_end2
 	rts
 
         .pend
@@ -166,7 +189,6 @@ _end
 ; === Mandel data ===
 
 	.section data
-		.dfloat 11879546.0
 x0      .dfloat -2.5
 y0      .dfloat -1
 cx      .dfloat 0
@@ -176,7 +198,7 @@ cy2     .dfloat 0          ; cy ^ 2
 xtemp   .dfloat 0
 
 	;.rodata
-
+k0		.dfloat 0
 kx0     .dfloat -2.5
 k4f     .dfloat 4
 xstep   .dfloat 0.0109375  ; (1 - (-2.5)) / 320
